@@ -1,6 +1,8 @@
 #include <SPI.h> 
 #include <nRF24L01.h>
+#include <SoftwareSerial.h>
 #include <RF24.h>
+SoftwareSerial BTSerial (7, 8);
 int LM_pin = 4;     // 아두이노의 4핀을 소리감지센서 핀으로 사용
 int LED_pin = 6;    // 아두이노의 6번핀을 LED 핀으로 사용
 RF24 radio(7, 8); // SPI 버스에 nRF24L01 라디오를 설정하기 위해 CE, CSN 선언.
@@ -13,9 +15,16 @@ void setup(){
   radio.openReadingPipe(0, address);
   radio.setPALevel(RF24_PA_MIN);
   radio.startListening();
+  BTSerial.begin(9600);
 }
 
 void loop() {
+  if(BTSerial.available()){
+    Serial.write(BTSerial.read());
+  }
+  if(Serial.available()){
+    BTSerial.write(Serial.read());
+  }
   if (radio.available()) {
     char text[32] = "";
     radio.read(&text, sizeof(text));
