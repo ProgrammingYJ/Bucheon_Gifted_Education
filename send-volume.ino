@@ -15,8 +15,10 @@ void setup() {
 
 void loop() {
   const char text[] = "Sound High";
-  if(digitalRead(LM_pin) == HIGH){     // 소리가 감지되면
-    radio.write(&text, sizeof(text));
-    delay(100);       // 0.1초간 기다림(연속입력 방지)
-  }
+  if (radio.available()) {
+    if(digitalRead(LM_pin) == HIGH){     // 소리가 감지되면
+      radio.write(&text, sizeof(text));
+      delay(100);       // 0.1초간 기다림(연속입력 방지)
+    }
+  }  
 }
